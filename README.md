@@ -97,14 +97,4 @@ This project is licensed under the MIT License.
 
 ---
 
-## 👨‍💻 Author
-
-**Prem Kumar**  
-📧 yadavpremkumar436@gmail.com  
-🔗 GitHub: https://github.com/premkumar205  
-
----
-
-## ⭐ Support
-
 
