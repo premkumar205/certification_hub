@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+<style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f0f2f5; margin:0; padding:20px; }
+    .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+    th { background: #667eea; color: white; }
+    tr:nth-child(even) { background-color: #f8f9ff; }
+    button { background: #764ba2; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; transition: 0.2s; }
+    button:hover { background: #5a3880; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2 style="margin: 0; color:#333;">Admin Dashboard - Users</h2>
+        <a href="index125.html" style="text-decoration:none; color:#667eea; font-weight:bold; font-size:14px;">&larr; Back to Main Site</a>
+    </div>
+
+    <table id="usersTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be populated here by JavaScript -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const API_BASE_URL = "http://127.0.0.1:8000";
+    
+    async function fetchUsers() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("No access token. Please log in first.");
+            window.location.href = "index125.html";
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/users`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (response.status === 403) {
+                alert("Admin Access Required.");
+                window.location.href = "index125.html";
+                return;
+            }
+            if (!response.ok) throw new Error("Failed to fetch users");
+            
+            const users = await response.json();
+            const tbody = document.querySelector("#usersTable tbody");
+            tbody.innerHTML = "";
+            
+            users.forEach(user => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${user.id}</td>
+                    <td><strong>${user.username}</strong></td>
+                    <td style="color:#666;">${user.role}</td>
+                    <td>${user.email || 'N/A'}</td>
+                    <td>
+                        <button onclick="window.location.href='user_certificates.html?id=${user.id}&name=${encodeURIComponent(user.username)}'">View Certificates</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (error) {
+            console.error(error);
+            alert("Error communicating with backend.");
+        }
+    }
+    
+    fetchUsers();
+</script>
+
+</body>
+</html>

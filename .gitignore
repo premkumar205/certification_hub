@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+backend/certifyhub.db
+venv/
+env/
+.DS_Store

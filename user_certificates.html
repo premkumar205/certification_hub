@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Certificates</title>
+<style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f0f2f5; margin:0; padding:20px; }
+    .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: left; }
+    th, td { padding: 12px; border: 1px solid #ddd; }
+    th { background: #667eea; color: white; }
+    tr:nth-child(even) { background-color: #f8f9ff; }
+    .back-btn { background: #95a5a6; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; text-decoration: none; display:inline-block; margin-bottom:15px; font-weight:bold; }
+    .back-btn:hover { background: #7f8c8d; }
+    .link-btn { color:#667eea; text-decoration:none; font-weight:bold; }
+    .link-btn:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <a href="admin.html" class="back-btn">&larr; Back to Users</a>
+    <h2 id="pageTitle" style="margin-top:0; color:#333;">Certificates for User</h2>
+    
+    <div id="content">
+        <p style="color:#666;">Loading certificates...</p>
+    </div>
+</div>
+
+<script>
+    const API_BASE_URL = "http://127.0.0.1:8000";
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('id');
+    const username = urlParams.get('name') || "User";
+    
+    document.getElementById("pageTitle").textContent = `Certificates for ${username}`;
+
+    async function fetchCertificates() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            window.location.href = "index125.html";
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/certificates/user/${userId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!response.ok) throw new Error("Failed to fetch certificates");
+            
+            const certs = await response.json();
+            const content = document.getElementById("content");
+            
+            if (certs.length === 0) {
+                content.innerHTML = `<p style="padding: 20px; background: #f8f9ff; border-radius: 8px; color: #666; font-style: italic;">This user has not uploaded any certificates yet.</p>`;
+                return;
+            }
+            
+            let html = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>Certificate Name</th>
+                        <th>Issuer</th>
+                        <th>Issued Date</th>
+                        <th>Resources</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            certs.forEach(cert => {
+                let linkStr = cert.link ? `<a href="${cert.link}" target="_blank" class="link-btn">🔗 Verify Link</a>` : '<span style="color:#aaa;">No link provided</span>';
+                
+                html += `
+                <tr>
+                    <td><strong>${cert.name}</strong></td>
+                    <td>${cert.issuer}</td>
+                    <td>${cert.date}</td>
+                    <td>${linkStr}</td>
+                </tr>
+                `;
+            });
+            html += `</tbody></table>`;
+            content.innerHTML = html;
+            
+        } catch (error) {
+            console.error(error);
+            document.getElementById("content").innerHTML = "<p style='color:red;'>Error communicating with backend to fetch certificates.</p>";
+        }
+    }
+    
+    fetchCertificates();
+</script>
+
+</body>
+</html>

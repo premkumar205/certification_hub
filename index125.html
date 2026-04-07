@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CertifyHub - Certification Management</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+margin:0;
+background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+min-height:100vh;
+color:#333;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
+
+*{box-sizing:border-box}
+
+/* HEADER */
+
+header{
+    background:linear-gradient(135deg,#2c3e50 0%,#34495e 100%);
+    color:white;
+    padding:20px 30px;
+    display:flex;              /* always show header at top */
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 4px 20px rgba(0,0,0,0.15);
+    width:100%;
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:100;
+}
+
+header h1{
+margin:0;
+font-size:28px;
+font-weight:700;
+}
+
+nav a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+cursor:pointer;
+font-weight:500;
+transition:0.3s;
+}
+
+nav a:hover{
+opacity:0.8;
+}
+
+/* CONTAINER */
+
+.container{
+width:85%;
+max-width:1200px;
+margin-top:120px;
+padding:50px 30px;
+background:rgba(255,255,255,0.95);
+border-radius:20px;
+box-shadow:0 10px 40px rgba(0,0,0,0.1);
+display:none;
+}
+
+/* CARDS */
+
+.cards{
+display:flex;
+gap:30px;
+margin-top:40px;
+flex-wrap:wrap;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+flex:1;
+min-width:280px;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+.card button{
+margin-top:15px;
+padding:12px 25px;
+border:none;
+border-radius:25px;
+background:#667eea;
+color:white;
+cursor:pointer;
+}
+
+/* FORM */
+
+form{
+display:flex;
+flex-direction:column;
+gap:15px;
+max-width:500px;
+margin:auto;
+}
+
+form input,
+form button{
+width:100%;
+padding:12px;
+font-size:16px;
+border-radius:8px;
+}
+
+form input{
+border:1px solid #ccc;
+}
+
+form button{
+background:#667eea;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:30px;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #ddd;
+text-align:left;
+}
+
+th{
+background:#667eea;
+color:white;
+font-weight:600;
+}
+
+td{
+word-wrap:break-word;
+word-break:break-word;
+}
+
+th:nth-child(1),
+td:nth-child(1){
+width:25%;
+}
+
+th:nth-child(2),
+td:nth-child(2){
+width:25%;
+}
+
+th:nth-child(3),
+td:nth-child(3){
+width:20%;
+}
+
+th:nth-child(4),
+td:nth-child(4){
+width:30%;
+text-align:center;
+}
+
+
+/* PAGES */
+
+.page{
+display:none;
+}
+
+.active{
+display:block;
+}
+
+/* SEARCH */
+
+.search-container{
+margin-bottom:20px;
+}
+
+.search-container input{
+width:100%;
+padding:12px;
+border-radius:25px;
+border:1px solid #ccc;
+}
+
+/* PHOTO PREVIEW */
+
+.preview-img{
+max-width:300px;
+margin-top:20px;
+border-radius:10px;
+}
+
+/* SAVE BY PHOTO THEME */
+
+.photo-upload-box{
+width:400px;
+height:250px;
+border:3px dashed #667eea;
+border-radius:20px;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+margin:auto;
+cursor:pointer;
+background:#f8f9ff;
+transition:0.3s;
+}
+
+.photo-upload-box:hover{
+background:#eef0ff;
+transform:scale(1.03);
+}
+
+.plus-icon{
+font-size:80px;
+color:#ff4d6d;
+font-weight:bold;
+}
+
+.upload-text{
+font-size:18px;
+margin-bottom:20px;
+color:#333;
+font-weight:600;
+}
+
+#certificatePhoto{
+display:none;
+}
+
+/* CAMERA MODAL */
+#cameraModal{
+display:none !important;
+}
+
+#cameraModal.active{
+display:flex !important;
+}
+
+/* LOGIN SECTION */
+#login-section{
+display:flex;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+align-items:center;
+justify-content:center;
+z-index:200;
+}
+
+#login-section:not(.visible){
+display:none;
+}
+
+#login-section.visible{
+display:flex !important;
+}
+
+.auth-container{
+    background:rgba(255,255,255,0.95);
+    padding:50px 40px;
+    border-radius:20px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2);
+    max-width:400px;
+    width:90%;
+    /* flex parent alignment should center it, but add margin auto as extra insurance */
+    margin:0 auto;
+}
+
+.auth-container h2{
+text-align:center;
+color:#333;
+margin-top:0;
+}
+
+.auth-container .form-group{
+margin-bottom:20px;
+}
+
+.auth-container input{
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+box-sizing:border-box;
+}
+
+.auth-container button{
+width:100%;
+padding:12px;
+background:#667eea;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+font-weight:600;
+}
+
+.auth-container button:hover{
+background:#5568d3;
+}
+
+.auth-error{
+color:#e74c3c;
+margin-bottom:15px;
+font-size:14px;
+}
+
+.toggle-form{
+text-align:center;
+margin-top:20px;
+font-size:14px;
+}
+
+.toggle-form a{
+color:#667eea;
+cursor:pointer;
+text-decoration:none;
+}
+
+.toggle-form a:hover{
+text-decoration:underline;
+}
+
+#register-form{
+display:none;
+}
+
+#header.visible{
+display:flex;
+}
+
+.container.visible{
+display:block;
+}
+
+/* USER PROFILE (Google-style) */
+.user-profile-wrap{
+position:relative;
+display:none;
+align-items:center;
+margin-left:20px;
+}
+
+.user-profile-btn{
+position:relative;
+width:40px;
+height:40px;
+border-radius:50%;
+border:none;
+cursor:pointer;
+background:transparent;
+padding:0;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.user-avatar{
+width:36px;
+height:36px;
+border-radius:50%;
+object-fit:cover;
+display:block;
+}
+
+.user-avatar-initial{
+width:36px;
+height:36px;
+border-radius:50%;
+background:linear-gradient(135deg,#7c4dff 0%,#651fff 100%);
+color:white;
+font-size:18px;
+font-weight:600;
+display:flex;
+align-items:center;
+justify-content:center;
+text-transform:uppercase;
+}
+
+/* Google-style colorful border around avatar */
+.user-profile-btn::before{
+content:'';
+position:absolute;
+top:-2px;
+left:-2px;
+right:-2px;
+bottom:-2px;
+border-radius:50%;
+background:conic-gradient(from 0deg,#ea4335 0deg 90deg,#fbbc04 90deg 180deg,#34a853 180deg 270deg,#4285f4 270deg 360deg);
+z-index:-1;
+}
+
+.user-profile-btn::after{
+content:'';
+position:absolute;
+top:2px;
+left:2px;
+right:2px;
+bottom:2px;
+border-radius:50%;
+background:linear-gradient(135deg,#2c3e50 0%,#34495e 100%);
+z-index:-1;
+}
+
+.user-profile-dropdown{
+position:absolute;
+top:calc(100% + 12px);
+right:0;
+min-width:280px;
+background:white;
+border-radius:12px;
+box-shadow:0 8px 24px rgba(0,0,0,0.2);
+padding:20px;
+display:none;
+z-index:200;
+color:#333;
+}
+
+.user-profile-dropdown.open{
+display:block;
+}
+
+.profile-dropdown-header{
+display:flex;
+align-items:center;
+gap:16px;
+padding-bottom:16px;
+border-bottom:1px solid #eee;
+margin-bottom:12px;
+}
+
+.profile-dropdown-avatar{
+width:56px;
+height:56px;
+border-radius:50%;
+object-fit:cover;
+flex-shrink:0;
+}
+
+.profile-dropdown-initial{
+width:56px;
+height:56px;
+border-radius:50%;
+background:linear-gradient(135deg,#7c4dff 0%,#651fff 100%);
+color:white;
+font-size:24px;
+font-weight:600;
+display:flex;
+align-items:center;
+justify-content:center;
+text-transform:uppercase;
+flex-shrink:0;
+}
+
+.profile-dropdown-info{
+flex:1;
+min-width:0;
+}
+
+.profile-dropdown-name{
+font-weight:600;
+font-size:16px;
+margin:0 0 4px 0;
+}
+
+.profile-dropdown-email{
+font-size:14px;
+color:#666;
+margin:0;
+}
+
+.profile-dropdown-actions{
+display:flex;
+flex-direction:column;
+gap:4px;
+}
+
+.profile-dropdown-actions a,
+.profile-dropdown-actions button{
+display:block;
+width:100%;
+padding:10px 14px;
+text-align:left;
+border:none;
+background:transparent;
+color:#333;
+cursor:pointer;
+font-size:14px;
+border-radius:8px;
+text-decoration:none;
+transition:background 0.2s;
+}
+
+.profile-dropdown-actions a:hover,
+.profile-dropdown-actions button:hover{
+background:#f5f5f5;
+}
+
+.profile-dropdown-actions .logout-btn{
+color:#e74c3c;
+font-weight:600;
+}
+
+.profile-dropdown-actions .logout-btn:hover{
+background:#ffebee;
+}
+
+.profile-dropdown-detail{
+font-size:12px;
+color:#666;
+margin:2px 0;
+}
+
+.profile-dropdown-detail span{
+color:#333;
+}
+
+/* COMPLETE PROFILE & EDIT PROFILE MODAL */
+.profile-modal-overlay{
+position:fixed;
+top:0;left:0;right:0;bottom:0;
+background:rgba(0,0,0,0.6);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:300;
+}
+
+.profile-modal-overlay.open{
+display:flex;
+}
+
+.profile-modal{
+background:white;
+border-radius:16px;
+padding:30px 40px;
+max-width:420px;
+width:90%;
+max-height:90vh;
+overflow-y:auto;
+box-shadow:0 15px 50px rgba(0,0,0,0.25);
+}
+
+.profile-modal h2{
+margin-top:0;
+margin-bottom:24px;
+color:#333;
+}
+
+.profile-modal .form-group{
+margin-bottom:18px;
+}
+
+.profile-modal label{
+display:block;
+margin-bottom:6px;
+font-weight:600;
+font-size:14px;
+color:#333;
+}
+
+.profile-modal input[type="text"],
+.profile-modal input[type="email"]{
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:14px;
+box-sizing:border-box;
+}
+
+.profile-modal textarea{
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:14px;
+min-height:70px;
+resize:vertical;
+box-sizing:border-box;
+font-family:inherit;
+}
+
+.profile-pic-upload{
+width:120px;
+height:120px;
+border:3px dashed #667eea;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+overflow:hidden;
+margin:0 auto 20px;
+position:relative;
+background:#f8f9ff;
+}
+
+.profile-pic-upload:hover{
+background:#eef0ff;
+}
+
+.profile-pic-upload img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.profile-pic-upload .placeholder-text{
+color:#667eea;
+font-size:12px;
+text-align:center;
+padding:10px;
+}
+
+.profile-pic-upload input{
+display:none;
+}
+
+.profile-modal-actions{
+display:flex;
+gap:12px;
+margin-top:24px;
+}
+
+.profile-modal-actions button{
+flex:1;
+padding:12px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:15px;
+font-weight:600;
+}
+
+.profile-modal-actions .btn-primary{
+background:#667eea;
+color:white;
+}
+
+.profile-modal-actions .btn-primary:hover{
+background:#5568d3;
+}
+
+.profile-modal-actions .btn-secondary{
+background:#e0e0e0;
+color:#333;
+}
+
+.profile-modal-actions .btn-secondary:hover{
+background:#d0d0d0;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN SECTION -->
+<section id="login-section">
+<div class="auth-container">
+
+<!-- LOGIN FORM -->
+<div id="login-form">
+<h2>CertifyHub Login</h2>
+<div id="login-error" class="auth-error"></div>
+
+<form id="loginFormElement" onsubmit="handleLogin(event)">
+<div class="form-group">
+<input type="text" id="login-username" placeholder="Username" required>
+</div>
+<div class="form-group">
+<input type="tel" id="login-phone" placeholder="Phone Number (10 digits)" required>
+</div>
+<div class="form-group">
+<input type="password" id="login-password" placeholder="Password" required>
+</div>
+<button type="submit">Login</button>
+</form>
+
+<div class="toggle-form">
+Don't have an account? <a href="#" onclick="toggleForm(event); return false;">Register</a>
+</div>
+</div>
+
+<!-- REGISTER FORM -->
+<div id="register-form">
+<h2>Create Account</h2>
+<div id="register-error" class="auth-error"></div>
+
+<form id="registerFormElement" onsubmit="handleRegister(event)">
+<div class="form-group">
+<input type="text" id="reg-username" placeholder="Username" required>
+</div>
+<div class="form-group">
+<input type="tel" id="reg-phone" placeholder="Phone Number (10 digits)" required>
+</div>
+<div class="form-group">
+<input type="password" id="reg-password" placeholder="Password" required>
+</div>
+<button type="submit">Register</button>
+</form>
+
+<div class="toggle-form">
+Already have an account? <a href="#" onclick="toggleForm(event); return false;">Login</a>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- COMPLETE PROFILE MODAL (after registration) -->
+<div class="profile-modal-overlay" id="completeProfileModal">
+<div class="profile-modal">
+<h2>Complete Your Profile</h2>
+<p style="margin-bottom:20px;color:#666;font-size:14px;">Add a few more details to personalize your account.</p>
+<form id="completeProfileForm" onsubmit="handleCompleteProfile(event)">
+<div class="form-group" style="text-align:center;">
+<div class="profile-pic-upload" id="completeProfilePicWrap" onclick="document.getElementById('completeProfilePicInput').click()">
+<span class="placeholder-text" id="completeProfilePicPlaceholder">📷<br>Upload Photo</span>
+<img id="completeProfilePicPreview" src="" alt="" style="display:none;">
+<input type="file" id="completeProfilePicInput" accept="image/*">
+</div>
+</div>
+<div class="form-group">
+<label>Role</label>
+<input type="text" id="complete-role" placeholder="e.g. Developer, Student, Professional" required>
+</div>
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="complete-email" placeholder="your@email.com" required>
+</div>
+<div class="form-group">
+<label>Date of Birth</label>
+<input type="date" id="complete-dob" required>
+</div>
+<div class="form-group">
+<label>Address</label>
+<textarea id="complete-address" placeholder="Enter your address" required></textarea>
+</div>
+<div class="profile-modal-actions">
+<button type="submit" class="btn-primary">Save & Continue</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="profile-modal-overlay" id="editProfileModal">
+<div class="profile-modal">
+<h2>Edit Profile</h2>
+<form id="editProfileForm" onsubmit="handleEditProfile(event)">
+<div class="form-group" style="text-align:center;">
+<div class="profile-pic-upload" id="editProfilePicWrap" onclick="document.getElementById('editProfilePicInput').click()">
+<span class="placeholder-text" id="editProfilePicPlaceholder">📷<br>Change Photo</span>
+<img id="editProfilePicPreview" src="" alt="" style="display:none;">
+<input type="file" id="editProfilePicInput" accept="image/*">
+</div>
+</div>
+<div class="form-group">
+<label>Username</label>
+<input type="text" id="edit-username" placeholder="Username" required>
+</div>
+<div class="form-group">
+<label>Phone Number</label>
+<input type="tel" id="edit-phone" placeholder="10-digit phone number" required>
+</div>
+<div class="form-group">
+<label>Role</label>
+<input type="text" id="edit-role" placeholder="e.g. Developer, Student, Professional">
+</div>
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="edit-email" placeholder="your@email.com">
+</div>
+<div class="form-group">
+<label>Date of Birth</label>
+<input type="date" id="edit-dob">
+</div>
+<div class="form-group">
+<label>Address</label>
+<textarea id="edit-address" placeholder="Enter your address"></textarea>
+</div>
+<div class="profile-modal-actions">
+<button type="submit" class="btn-primary">Save Changes</button>
+<button type="button" class="btn-secondary" onclick="closeEditProfileModal()">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div class="profile-modal-overlay" id="changePasswordModal">
+<div class="profile-modal">
+<h2>Change Password</h2>
+<p style="margin-bottom:16px;color:#666;font-size:14px;">Verify your identity to change your password.</p>
+<div id="changePasswordVerifyStep">
+<div class="form-group">
+<label>Username</label>
+<input type="text" id="changePwUsername" placeholder="Enter your username">
+</div>
+<div class="form-group">
+<label>Phone Number</label>
+<input type="tel" id="changePwPhone" placeholder="10-digit phone number">
+</div>
+<div id="changePasswordError" class="auth-error" style="margin-bottom:12px;"></div>
+<div class="profile-modal-actions">
+<button type="button" class="btn-primary" onclick="verifyAndShowPasswordFields()">Verify</button>
+<button type="button" class="btn-secondary" onclick="closeChangePasswordModal()">Cancel</button>
+</div>
+</div>
+<div id="changePasswordNewStep" style="display:none;">
+<form id="changePasswordForm" onsubmit="handleChangePassword(event)">
+<div class="form-group">
+<label>New Password</label>
+<input type="password" id="changePwNew" placeholder="Enter new password" required>
+</div>
+<div class="form-group">
+<label>Confirm Password</label>
+<input type="password" id="changePwConfirm" placeholder="Confirm new password" required>
+</div>
+<div id="changePasswordMatchError" class="auth-error" style="margin-bottom:12px;"></div>
+<div class="profile-modal-actions">
+<button type="submit" class="btn-primary">Save Password</button>
+<button type="button" class="btn-secondary" onclick="closeChangePasswordModal()">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+<!-- DELETE ACCOUNT MODAL -->
+<div class="profile-modal-overlay" id="deleteAccountModal">
+<div class="profile-modal">
+<h2>Delete Account</h2>
+<p style="margin-bottom:16px;color:#e74c3c;font-size:14px;font-weight:600;">This action cannot be undone. All your certificates will be permanently deleted.</p>
+<p style="margin-bottom:16px;color:#666;font-size:14px;">Enter your credentials to confirm account deletion.</p>
+<form id="deleteAccountForm" onsubmit="handleDeleteAccount(event)">
+<div class="form-group">
+<label>Username</label>
+<input type="text" id="deleteAccountUsername" placeholder="Enter your username" required>
+</div>
+<div class="form-group">
+<label>Phone Number</label>
+<input type="tel" id="deleteAccountPhone" placeholder="10-digit phone number" required>
+</div>
+<div class="form-group">
+<label>Password</label>
+<input type="password" id="deleteAccountPassword" placeholder="Enter your password" required>
+</div>
+<div id="deleteAccountError" class="auth-error" style="margin-bottom:12px;"></div>
+<div class="profile-modal-actions">
+<button type="submit" class="btn-primary" style="background:#e74c3c;">Delete Account</button>
+<button type="button" class="btn-secondary" onclick="closeDeleteAccountModal()">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+
+<header id="header">
+<h1>CertifyHub</h1>
+
+<nav id="navMenu">
+<div class="user-profile-wrap">
+<button type="button" class="user-profile-btn" id="userProfileBtn" onclick="toggleProfileDropdown(event)" title="User account">
+<span class="user-avatar-initial" id="headerAvatarInitial">?</span>
+<img class="user-avatar" id="headerAvatarImg" src="" alt="" style="display:none;">
+</button>
+<div class="user-profile-dropdown" id="userProfileDropdown" onclick="event.stopPropagation()">
+<div class="profile-dropdown-header">
+<img class="profile-dropdown-avatar" id="dropdownAvatarImg" src="" alt="" style="display:none;">
+<span class="profile-dropdown-initial" id="dropdownAvatarInitial">?</span>
+<div class="profile-dropdown-info">
+<p class="profile-dropdown-name" id="dropdownUserName">User</p>
+<p class="profile-dropdown-email" id="dropdownUserPhone">—</p>
+<p class="profile-dropdown-detail" id="dropdownUserEmail" style="display:none;">Email: <span id="dropdownUserEmailVal">—</span></p>
+<p class="profile-dropdown-detail" id="dropdownUserRole" style="display:none;">Role: <span id="dropdownUserRoleVal">—</span></p>
+<p class="profile-dropdown-detail" id="dropdownUserDob" style="display:none;">Date of Birth: <span id="dropdownUserDobVal">—</span></p>
+<p class="profile-dropdown-detail" id="dropdownUserAddress" style="display:none;">Address: <span id="dropdownUserAddressVal">—</span></p>
+<p class="profile-dropdown-detail">Password: <span id="dropdownPasswordVal">••••••</span> <a href="#" onclick="togglePasswordVisibility(event); return false;" id="passwordToggleLink" style="font-size:11px;margin-left:4px;">Show</a></p>
+</div>
+</div>
+<div class="profile-dropdown-actions">
+<a href="#" onclick="closeProfileDropdown(); openEditProfileModal(); return false;">Edit Profile</a>
+<a href="#" onclick="closeProfileDropdown(); openChangePasswordModal(); return false;">Change Password</a>
+<a href="#" onclick="showPage('dashboard'); closeProfileDropdown(); return false;">Dashboard</a>
+<a href="#" id="adminDashboardLink" style="display:none;" onclick="showPage('admin'); closeProfileDropdown(); getAdminData(); return false;">Admin Dashboard</a>
+<a href="#" onclick="showPage('add'); closeProfileDropdown(); return false;">Add Certificate</a>
+<a href="#" onclick="showPage('photo'); closeProfileDropdown(); return false;">Save by Photo</a>
+<a href="#" onclick="showPage('view'); closeProfileDropdown(); return false;">View Certificates</a>
+<a href="#" onclick="closeProfileDropdown(); openDeleteAccountModal(); return false;" style="color:#e74c3c;">Delete Account</a>
+<button type="button" class="logout-btn" onclick="closeProfileDropdown(); logout();">Log out</button>
+</div>
+</div>
+</div>
+</nav>
+
+</header>
+
+<div id="container" class="container">
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="page active">
+
+<div style="text-align:center;margin-bottom:40px;">
+<h2>Welcome to CertifyHub</h2>
+<p>Manage and verify your certifications easily</p>
+</div>
+
+<div class="cards">
+
+<div class="card">
+<h3>Add Certificate</h3>
+<button onclick="showPage('add')">Add Certificate</button>
+</div>
+
+<div class="card">
+<h3>View Certificates</h3>
+<button onclick="showPage('view')">View Certificates</button>
+</div>
+
+<div class="card">
+<h3>Save by Photo</h3>
+<button onclick="showPage('photo')">Save by Photo</button>
+</div>
+
+</div>
+
+</section>
+
+<!-- ADD CERTIFICATE -->
+
+<section id="add" class="page">
+
+<h2>Add Certificate</h2>
+
+<form id="certificateForm">
+
+<input type="text" id="name" placeholder="Certificate Name" required>
+
+<input type="text" id="issuer" placeholder="Issued By" required>
+
+<input type="date" id="date" required>
+
+<input type="url" id="link" placeholder="Certificate Link">
+
+<button type="submit">Save Certificate</button>
+
+</form>
+
+</section>
+
+<!-- SAVE BY PHOTO -->
+<section id="photo" class="page">
+
+<h2 style="text-align:center;margin-bottom:40px;">Save by Photo</h2>
+
+<div style="text-align:center;margin-bottom:40px;display:flex;gap:20px;justify-content:center;">
+<button onclick="openCamera()" style="padding:12px 30px;border:none;border-radius:8px;background:#667eea;color:white;cursor:pointer;font-size:16px;font-weight:600;">
+📷 Take Photo with Camera
+</button>
+<button onclick="document.getElementById('certificatePhoto').click()" style="padding:12px 30px;border:none;border-radius:8px;background:#764ba2;color:white;cursor:pointer;font-size:16px;font-weight:600;">
+📁 Upload from Device
+</button>
+</div>
+
+<!-- Photo and Form Container -->
+<div style="position:relative;max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;">
+
+<!-- Photo Preview Section -->
+<div style="flex:1;min-width:250px;display:flex;justify-content:center;align-items:center;">
+<img id="photoPreview" style="max-width:300px;width:100%;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.15);display:none;">
+</div>
+
+<!-- Photo Upload Form (shown after upload) -->
+<form id="photoUploadForm" style="flex:1;min-width:280px;max-width:350px;background:white;padding:30px;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.1);display:none;" onsubmit="handlePhotoUpload(event)">
+
+<input type="text" id="photoCertName" placeholder="Certificate Name" required style="width:100%;padding:12px;margin-bottom:15px;border-radius:8px;border:1px solid #ccc;font-size:14px;box-sizing:border-box;">
+
+<input type="text" id="photoCertIssuer" placeholder="Issued By" required style="width:100%;padding:12px;margin-bottom:15px;border-radius:8px;border:1px solid #ccc;font-size:14px;box-sizing:border-box;">
+
+<input type="date" id="photoCertDate" required style="width:100%;padding:12px;margin-bottom:20px;border-radius:8px;border:1px solid #ccc;font-size:14px;box-sizing:border-box;">
+
+<button type="submit" style="padding:12px 20px;border:none;border-radius:8px;background:#764ba2;color:white;cursor:pointer;width:100%;font-weight:600;margin-bottom:10px;">
+Save Certificate
+</button>
+
+<button type="button" onclick="cancelPhotoUpload()" style="padding:12px 20px;border:none;border-radius:8px;background:#95a5a6;color:white;cursor:pointer;width:100%;font-weight:600;">
+Cancel
+</button>
+
+</form>
+
+</div>
+
+<!-- CAMERA MODAL -->
+<div id="cameraModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:1000;flex-direction:column;align-items:center;justify-content:center;">
+
+<div style="position:relative;width:90%;max-width:500px;">
+
+<video id="videoStream" style="width:100%;border-radius:10px;display:block;background:black;"></video>
+
+<img id="capturedPhoto" style="width:100%;border-radius:10px;display:none;">
+
+<div style="text-align:center;margin-top:20px;display:flex;gap:10px;justify-content:center;">
+
+<button id="captureBtn" onclick="capturePhoto()" style="padding:10px 30px;border:none;border-radius:8px;background:#27ae60;color:white;cursor:pointer;font-size:16px;">
+Capture Photo
+</button>
+
+<button id="retakeBtn" onclick="retakePhoto()" style="padding:10px 30px;border:none;border-radius:8px;background:#f39c12;color:white;cursor:pointer;font-size:16px;display:none;">
+Retake Photo
+</button>
+
+<button onclick="closeCamera()" style="padding:10px 30px;border:none;border-radius:8px;background:#e74c3c;color:white;cursor:pointer;font-size:16px;">
+Close Camera
+</button>
+
+</div>
+
+<!-- Camera Certificate Form -->
+<form id="cameraCertificateForm" style="max-width:400px;margin:20px auto;display:none;" onsubmit="saveCameraPhoto(event)">
+
+<input type="text" id="cameraCertName" placeholder="Certificate Name" required style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;">
+
+<input type="text" id="cameraCertIssuer" placeholder="Issued By" required style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;">
+
+<input type="date" id="cameraCertDate" required style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;">
+
+<button type="submit" style="padding:10px 20px;border:none;border-radius:8px;background:#27ae60;color:white;cursor:pointer;width:100%;">
+Save Certificate
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+<!-- FILE UPLOAD INPUT (Hidden) -->
+<input type="file" id="certificatePhoto" accept="image/*" style="display:none;">
+
+</section>
+
+<!-- ADMIN DASHBOARD -->
+<section id="admin" class="page">
+<style>
+/* Smooth transition styles */
+.fade-in { animation: fadeIn 0.4s ease forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Active user highlight */
+.row-user { cursor: pointer; transition: 0.2s background; border-bottom: 1px solid #ddd; padding: 12px; }
+.row-user:hover { background: #f0f4ff !important; }
+.active-user { background: #eef2ff !important; border-left: 4px solid #667eea; }
+
+/* Admin layout */
+.admin-layout { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; padding: 20px; align-items: flex-start; }
+.admin-users-col { flex: 1; min-width: 300px; background: white; border-radius: 10px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.admin-certs-col { flex: 2; min-width: 500px; background: white; border-radius: 10px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: none; }
+
+/* Toast */
+#admin-toast { position: fixed; bottom: 30px; right: 30px; z-index: 1000; padding: 15px 25px; border-radius: 8px; color: white; display: none; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: fadeIn 0.3s forwards; }
+
+.status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+.status-pending { background: #f39c12; color: white; }
+.status-verified { background: #2ecc71; color: white; }
+.status-rejected { background: #e74c3c; color: white; }
+</style>
+
+<h2>Admin Dashboard</h2>
+<p style="text-align:center;color:#666;">Platform Overview</p>
+
+<div class="admin-layout" id="admin-container">
+    <div class="admin-users-col" id="admin-users-list">
+        <!-- Render Users here -->
+    </div>
+    
+    <div class="admin-certs-col fade-in" id="admin-certs-panel">
+        <!-- Render certificates dynamically -->
+    </div>
+</div>
+
+<div id="admin-toast"></div>
+</section>
+<!-- VIEW CERTIFICATES -->
+
+<section id="view" class="page">
+
+<h2>Your Certificates</h2>
+
+<div class="search-container">
+<input type="text" id="searchInput" placeholder="Search certificates" oninput="searchCertificates()">
+</div>
+
+<table>
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Issuer</th>
+<th>Date</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="certificateTable"></tbody>
+
+</table>
+
+</section>
+
+</div>
+
+<script src="script.js?v=2"></script>
+
+</body>
+</html>
