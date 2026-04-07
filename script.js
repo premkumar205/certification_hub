@@ -1050,7 +1050,6 @@ document.addEventListener("DOMContentLoaded", function () {
     initializePhotoUpload();
     initProfilePicPreviews();
     checkUserLogin();
-=======
 /* AUTHENTICATION */
 
 function checkUserLogin(){
