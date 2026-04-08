@@ -75,7 +75,7 @@ async function handleLogin(event){
     formData.append("password", password);
 
     try {
-        const response = await fetch(`${API_BASE_URL}/login`, {
+        const response = await fetch(`${API_BASE_URL}/login/`, {
             method: 'POST',
             body: formData
         });
@@ -87,7 +87,7 @@ async function handleLogin(event){
 
         localStorage.setItem("token", token);
 
-        const userRes = await fetch(`${API_BASE_URL}/users/me`, {
+        const userRes = await fetch(`${API_BASE_URL}/users/me/`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if(userRes.ok) {
@@ -119,7 +119,7 @@ async function handleRegister(event){
     }
 
     try {
-        const response = await fetch(`${API_BASE_URL}/register`, {
+        const response = await fetch(`${API_BASE_URL}/register/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, email: "", phone, password, role: "user" })
@@ -650,7 +650,7 @@ let certificates = [];
 
 if (token) {
     try {
-        const response = await fetch(`${API_BASE_URL}/certificates/me`, {
+        const response = await fetch(`${API_BASE_URL}/certificates/me/`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.ok) {
