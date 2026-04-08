@@ -16,7 +16,12 @@ app = FastAPI(
 # Configure CORS so the frontend (like GitHub Pages) can communicate with the backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In production, replace "*" with your specific frontend domains
+    allow_origins=[
+        "https://premkumar205.github.io",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "http://localhost:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
