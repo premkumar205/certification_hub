@@ -8,7 +8,6 @@ function checkUserLogin() {
         showLoginPage();
     }
 }
-
 function showLoginPage() {
     const loginSection = document.getElementById("login-section");
     loginSection.style.display = "flex";
