@@ -2366,5 +2366,5 @@ document.addEventListener("DOMContentLoaded", function(){
 initializePhotoUpload();
 initProfilePicPreviews();
 checkUserLogin();
->>>>>>> 564322d (Initial commit - Certification Hub with Admin Dashboard)
+564322d (Initial commit - Certification Hub with Admin Dashboard)
 });
