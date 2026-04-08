@@ -1393,6 +1393,7 @@ function handleDeleteAccount(event){
         users = users.filter(u => !(u.username === username && u.phone === phone));
         localStorage.setItem("users", JSON.stringify(users));
         localStorage.removeItem("currentUser");
+        localStorage.removeItem("token");
         localStorage.removeItem("certificates_" + username);
 
         closeDeleteAccountModal();
@@ -1473,6 +1474,7 @@ function saveUserProfile(updatedUser, oldUsername, oldPhone){
 
 function logout(){
 localStorage.removeItem("currentUser");
+localStorage.removeItem("token");
 document.getElementById("loginFormElement").reset();
 document.getElementById("registerFormElement").reset();
 document.getElementById("login-error").textContent = "";
